@@ -59,6 +59,9 @@ CronJob = require("cron").CronJob
 
 module.exports = (robot) ->
   
+  # Make sure the lunch dictionary exists
+  robot.brain.data.lunch = robot.brain.data.lunch || {}
+
   ##
   # Define the lunch functions
   lunch =
@@ -104,14 +107,12 @@ module.exports = (robot) ->
   ##
   # List out all the orders
   robot.respond /lunch orders$/i, (msg) ->
-    msg.send "lunch orders..."
     orders = lunch.get().map (user) -> "#{user}: #{robot.brain.data.lunch[user]}"
     msg.send orders.join("\n") || "No items in the lunch list."
   
   ##
   # Save what a person wants to the lunch order
   robot.respond /i want (.*)/i, (msg) ->
-    msg.send "i want..."
     item = msg.match[1].trim()
     lunch.add msg.message.user.name, item
     msg.send "ok, added #{item} to your order."
@@ -119,21 +120,18 @@ module.exports = (robot) ->
   ##
   # Remove the persons items from the lunch order
   robot.respond /remove my order/i, (msg) ->
-    msg.send "remove order."
     lunch.remove msg.message.user.name
     msg.send "ok, I removed your order."
 
   ##
   # Cancel the entire order and remove all the items
   robot.respond /cancel all orders/i, (msg) ->
-    msg.send "cancel all order."
     delete robot.brain.data.lunch
     lunch.clear()  
 
   ##
   # Help decided who should either order, pick up or get
   robot.respond /who should (order|pick up|get) lunch?/i, (msg) ->
-    msg.send "who should pick up order."
     orders = lunch.get().map (user) -> user
     key = Math.floor(Math.random() * orders.length)
     msg.send "#{orders[key]} looks like you have to #{msg.match[1]} lunch today!"

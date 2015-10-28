@@ -47,7 +47,7 @@ TIMEZONE = process.env.TZ
 
 ##
 # Default lunch time
-NOTIFY_AT = process.env.HUBOT_LUNCHBOT_NOTIFY_AT || '0 0 11 * * *' # 11am everyday
+NOTIFY_AT = process.env.HUBOT_LUNCHBOT_NOTIFY_AT || '0 0 11 * Mon-Fri *' # 11am Mon-Fri
 
 ##
 # clear the lunch order on a schedule
